@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Französisch für den Urlaub</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bleu: #003087;
+    --rouge: #C8102E;
+    --cream: #FAF7F2;
+    --gold: #C9A84C;
+    --dark: #1a1a2e;
+    --text: #2d2d2d;
+    --muted: #888;
+    --green: #1a7a4a;
+    --green-light: #e8f7ef;
+    --red-light: #fdecea;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
+
+  /* HEADER */
+  header {
+    background: var(--bleu); color: white;
+    padding: 2.5rem 2rem 1.5rem; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  header::before {
+    content: ''; position: absolute; inset: 0;
+    background: repeating-linear-gradient(45deg,transparent,transparent 20px,rgba(255,255,255,.03) 20px,rgba(255,255,255,.03) 40px);
+  }
+  .flag-stripe { display:flex; height:6px; width:120px; margin:0 auto 1.2rem; border-radius:3px; overflow:hidden; }
+  .flag-stripe div { flex:1; }
+  .flag-stripe div:nth-child(1),.flag-stripe div:nth-child(2) { background:#fff; }
+  .flag-stripe div:nth-child(3) { background:var(--rouge); }
+  header h1 { font-family:'Playfair Display',serif; font-size:2.2rem; font-weight:700; position:relative; }
+  header p  { font-size:.9rem; opacity:.7; margin-top:.4rem; font-weight:300; letter-spacing:.05em; position:relative; }
+
+  /* MODE SWITCHER */
+  .mode-bar { max-width:900px; margin:1.2rem auto 0; padding:0 1.5rem; display:flex; gap:.6rem; justify-content:center; position:relative; z-index:1; }
+  .mode-btn {
+    padding:.6rem 1.4rem; border-radius:50px; border:2px solid rgba(255,255,255,.35);
+    background:transparent; color:rgba(255,255,255,.8); font-family:'DM Sans',sans-serif;
+    font-size:.9rem; font-weight:500; cursor:pointer; transition:all .2s;
+  }
+  .mode-btn:hover { border-color:#fff; color:#fff; }
+  .mode-btn.active { background:#fff; color:var(--bleu); border-color:#fff; font-weight:700; }
+
+  /* CONTROLS */
+  .controls { max-width:900px; margin:1.5rem auto .75rem; padding:0 1.5rem; display:flex; gap:.75rem; flex-wrap:wrap; align-items:center; }
+  .search-box { flex:1; min-width:200px; position:relative; }
+  .search-box input {
+    width:100%; padding:.7rem 1rem .7rem 2.8rem;
+    border:2px solid #e0dbd2; border-radius:50px;
+    font-family:'DM Sans',sans-serif; font-size:.95rem; background:#fff; outline:none; transition:border-color .2s;
+  }
+  .search-box input:focus { border-color:var(--bleu); }
+  .search-box::before { content:'🔍'; position:absolute; left:1rem; top:50%; transform:translateY(-50%); font-size:.85rem; }
+  .filter-tabs { display:flex; gap:.4rem; flex-wrap:wrap; }
+  .tab {
+    padding:.45rem .9rem; border-radius:50px; border:2px solid #e0dbd2;
+    background:#fff; font-family:'DM Sans',sans-serif; font-size:.82rem;
+    cursor:pointer; transition:all .2s; color:var(--muted); font-weight:500;
+  }
+  .tab:hover { border-color:var(--bleu); color:var(--bleu); }
+  .tab.active { background:var(--bleu); border-color:var(--bleu); color:#fff; }
+
+  /* MAIN */
+  main { max-width:900px; margin:0 auto; padding:0 1.5rem 4rem; }
+
+  /* CATEGORY */
+  .category { margin-bottom:2.5rem; }
+  .category-header { display:flex; align-items:center; gap:.75rem; margin-bottom:1rem; padding-bottom:.5rem; border-bottom:2px solid var(--gold); }
+  .category-icon { font-size:1.4rem; }
+  .category-title { font-family:'Playfair Display',serif; font-size:1.25rem; font-weight:700; color:var(--bleu); }
+  .category-count { margin-left:auto; font-size:.78rem; color:var(--muted); background:#f0ece5; padding:.2rem .6rem; border-radius:20px; }
+
+  /* VOCAB GRID */
+  .vocab-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(255px,1fr)); gap:.6rem; }
+  .vocab-card {
+    background:#fff; border-radius:12px; padding:.8rem 1rem;
+    display:flex; align-items:center; gap:.5rem;
+    border:1px solid #ede8e0; cursor:pointer; transition:all .15s;
+  }
+  .vocab-card:hover { border-color:var(--bleu); transform:translateY(-1px); box-shadow:0 4px 16px rgba(0,48,135,.1); }
+  .vocab-card .card-text { flex:1; min-width:0; }
+  .vocab-card .fr { font-weight:500; color:var(--dark); font-size:.93rem; }
+  .vocab-card .de { font-size:.8rem; color:var(--muted); font-weight:300; margin-top:.15rem; }
+  .vocab-card.flipped .fr { color:var(--bleu); }
+  .vocab-card.flipped .de { color:var(--text); font-weight:400; }
+
+  .speak-btn {
+    flex-shrink:0; background:none; border:none; cursor:pointer;
+    font-size:1.05rem; padding:.25rem .3rem; border-radius:8px;
+    transition:background .15s; line-height:1; color:#aaa;
+  }
+  .speak-btn:hover { background:#f0ece5; color:var(--bleu); }
+  .speak-btn.speaking { animation:pulse .6s infinite alternate; color:var(--bleu); }
+  @keyframes pulse { from{opacity:.4} to{opacity:1} }
+
+  .tip-box {
+    background:linear-gradient(135deg,#fff9ee,#fff3d4); border:1px solid var(--gold);
+    border-radius:12px; padding:.9rem 1.1rem; margin-bottom:1.8rem;
+    display:flex; gap:.75rem; align-items:flex-start;
+  }
+  .tip-box .tip-icon { font-size:1.1rem; flex-shrink:0; }
+  .tip-box p { font-size:.83rem; color:#5a4a00; line-height:1.5; }
+  .tip-box strong { color:#3d3000; }
+
+  .empty { text-align:center; padding:3rem 1rem; color:var(--muted); }
+  .empty .emoji { font-size:2rem; margin-bottom:.5rem; }
+
+  /* TRAINER */
+  #trainerSection { display:none; }
+  #trainerSection.active { display:block; }
+  #listSection.hidden { display:none; }
+
+  .trainer-wrap { max-width:580px; margin:2rem auto; padding:0 1.5rem 4rem; }
+
+  .trainer-setup { background:#fff; border-radius:20px; padding:2rem; border:1px solid #ede8e0; box-shadow:0 4px 24px rgba(0,0,0,.06); }
+  .trainer-setup h2 { font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--bleu); margin-bottom:1.3rem; }
+  .setup-row { display:flex; flex-direction:column; gap:.4rem; margin-bottom:1.2rem; }
+  .setup-row label { font-size:.84rem; font-weight:500; color:var(--muted); }
+  .setup-row select {
+    padding:.55rem .8rem; border:2px solid #e0dbd2; border-radius:10px;
+    font-family:'DM Sans',sans-serif; font-size:.9rem; outline:none; background:#fff; transition:border-color .2s;
+  }
+  .setup-row select:focus { border-color:var(--bleu); }
+  .range-val { font-size:.85rem; color:var(--bleu); font-weight:600; }
+  .dir-toggle { display:flex; gap:.5rem; }
+  .dir-btn {
+    flex:1; padding:.5rem .4rem; border:2px solid #e0dbd2; border-radius:10px;
+    background:#fff; font-family:'DM Sans',sans-serif; font-size:.8rem;
+    cursor:pointer; transition:all .2s; color:var(--muted); font-weight:500; text-align:center;
+  }
+  .dir-btn.active { background:var(--bleu); border-color:var(--bleu); color:#fff; }
+  .start-btn {
+    width:100%; padding:.85rem; border-radius:50px; border:none;
+    background:var(--bleu); color:#fff; font-family:'DM Sans',sans-serif;
+    font-size:1rem; font-weight:600; cursor:pointer; transition:background .2s; margin-top:.4rem;
+  }
+  .start-btn:hover { background:#002070; }
+
+  /* PROGRESS */
+  .trainer-progress { display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem; }
+  .progress-track { flex:1; height:8px; background:#e0dbd2; border-radius:4px; overflow:hidden; }
+  .progress-fill { height:100%; background:var(--bleu); border-radius:4px; transition:width .35s; }
+  .progress-label { font-size:.82rem; color:var(--muted); white-space:nowrap; }
+
+  /* FLASHCARD */
+  .flashcard-scene { perspective:1000px; margin-bottom:1.2rem; cursor:pointer; }
+  .flashcard {
+    width:100%; min-height:210px; position:relative;
+    transform-style:preserve-3d; transition:transform .45s;
+    border-radius:20px;
+  }
+  .flashcard.flipped { transform:rotateY(180deg); }
+  .flashcard-face {
+    position:absolute; inset:0; border-radius:20px;
+    backface-visibility:hidden; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; padding:2rem;
+    box-shadow:0 8px 32px rgba(0,0,0,.1);
+  }
+  .flashcard-front { background:var(--bleu); color:#fff; }
+  .flashcard-back  { background:#fff; border:2px solid #ede8e0; transform:rotateY(180deg); }
+  .fc-hint { font-size:.72rem; opacity:.6; margin-bottom:.75rem; letter-spacing:.06em; text-transform:uppercase; }
+  .fc-word { font-family:'Playfair Display',serif; font-size:1.8rem; text-align:center; line-height:1.3; }
+  .flashcard-front .fc-word { color:#fff; }
+  .flashcard-back  .fc-word { color:var(--bleu); }
+  .tap-hint { font-size:.72rem; opacity:.45; margin-top:1rem; }
+
+  .fc-speak {
+    position:absolute; top:.9rem; right:.9rem;
+    background:rgba(255,255,255,.18); border:none; border-radius:50%;
+    width:36px; height:36px; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; font-size:.95rem; transition:background .2s; color:#fff;
+  }
+  .fc-speak:hover { background:rgba(255,255,255,.32); }
+  .flashcard-back .fc-speak { background:rgba(0,48,135,.08); color:var(--bleu); }
+  .flashcard-back .fc-speak:hover { background:rgba(0,48,135,.18); }
+
+  .reveal-btn {
+    display:block; width:100%; padding:.75rem; border-radius:14px;
+    border:2px solid var(--bleu); background:#fff; color:var(--bleu);
+    font-family:'DM Sans',sans-serif; font-size:.95rem; font-weight:600;
+    cursor:pointer; transition:all .15s; margin-bottom:.75rem;
+  }
+  .reveal-btn:hover { background:var(--bleu); color:#fff; }
+
+  .answer-btns { display:flex; gap:.75rem; }
+  .ans-btn {
+    flex:1; padding:.8rem; border-radius:14px; border:2px solid;
+    font-family:'DM Sans',sans-serif; font-size:.95rem; font-weight:600;
+    cursor:pointer; transition:all .15s; display:flex; align-items:center; justify-content:center; gap:.4rem;
+  }
+  .ans-btn.wrong   { border-color:var(--rouge); color:var(--rouge); background:#fff; }
+  .ans-btn.wrong:hover { background:var(--red-light); }
+  .ans-btn.correct { border-color:var(--green); color:var(--green); background:#fff; }
+  .ans-btn.correct:hover { background:var(--green-light); }
+
+  /* RESULT */
+  .result-screen { background:#fff; border-radius:20px; padding:2.5rem 2rem; text-align:center; border:1px solid #ede8e0; box-shadow:0 8px 32px rgba(0,0,0,.07); }
+  .result-emoji { font-size:3.5rem; margin-bottom:.75rem; }
+  .result-screen h2 { font-family:'Playfair Display',serif; font-size:1.7rem; color:var(--bleu); margin-bottom:.4rem; }
+  .result-screen > p { color:var(--muted); font-size:.9rem; margin-bottom:1.5rem; }
+  .score-row { display:flex; justify-content:center; gap:2rem; margin-bottom:1.8rem; }
+  .score-item { text-align:center; }
+  .score-num { font-family:'Playfair Display',serif; font-size:2.2rem; font-weight:700; }
+  .score-num.good { color:var(--green); }
+  .score-num.bad  { color:var(--rouge); }
+  .score-num.pct  { color:var(--bleu); }
+  .score-label { font-size:.78rem; color:var(--muted); }
+  .result-actions { display:flex; gap:.75rem; flex-wrap:wrap; justify-content:center; }
+  .res-btn {
+    padding:.7rem 1.4rem; border-radius:50px; border:2px solid;
+    font-family:'DM Sans',sans-serif; font-size:.9rem; font-weight:600; cursor:pointer; transition:all .2s;
+  }
+  .res-btn.primary { background:var(--bleu); border-color:var(--bleu); color:#fff; }
+  .res-btn.primary:hover { background:#002070; }
+  .res-btn.secondary { background:#fff; border-color:#e0dbd2; color:var(--text); }
+  .res-btn.secondary:hover { border-color:var(--bleu); color:var(--bleu); }
+
+  .missed-list { margin-top:1.5rem; text-align:left; }
+  .missed-list h3 { font-size:.82rem; font-weight:600; color:var(--muted); margin-bottom:.6rem; text-transform:uppercase; letter-spacing:.05em; }
+  .missed-item { display:flex; align-items:center; gap:.75rem; padding:.55rem .8rem; background:var(--red-light); border-radius:10px; margin-bottom:.4rem; font-size:.87rem; }
+  .missed-fr { font-weight:500; flex:1; }
+  .missed-de { color:var(--muted); }
+
+  @media(max-width:600px) {
+    header h1 { font-size:1.7rem; }
+    .vocab-grid { grid-template-columns:1fr 1fr; }
+    .fc-word { font-size:1.45rem; }
+    .score-row { gap:1rem; }
+    .score-num { font-size:1.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="flag-stripe"><div></div><div></div><div></div></div>
+  <h1>Französisch für den Urlaub</h1>
+  <p>Vokabeln · Aussprache · Trainer</p>
+  <div class="mode-bar">
+    <button class="mode-btn active" id="btnList" onclick="setMode('list')">📚 Vokabelliste</button>
+    <button class="mode-btn" id="btnTrainer" onclick="setMode('trainer')">🎯 Vokabeltrainer</button>
+  </div>
+</header>
+
+<!-- LIST MODE -->
+<div id="listSection">
+  <div class="controls">
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Suchen auf Deutsch oder Französisch…">
+    </div>
+    <div class="filter-tabs" id="filterTabs">
+      <button class="tab active" data-cat="all">Alle</button>
+      <button class="tab" data-cat="basics">Basics</button>
+      <button class="tab" data-cat="restaurant">Restaurant</button>
+      <button class="tab" data-cat="shopping">Einkaufen</button>
+      <button class="tab" data-cat="transport">Transport</button>
+      <button class="tab" data-cat="unterkunft">Unterkunft</button>
+      <button class="tab" data-cat="notfall">Notfall</button>
+      <button class="tab" data-cat="zahlen">Zahlen</button>
+      <button class="tab" data-cat="zeit">Zeit</button>
+    </div>
+  </div>
+  <main id="main"></main>
+</div>
+
+<!-- TRAINER MODE -->
+<div id="trainerSection">
+  <div class="trainer-wrap">
+
+    <!-- Setup -->
+    <div id="trainerSetup" class="trainer-setup">
+      <h2>🎯 Vokabeltrainer</h2>
+      <div class="setup-row">
+        <label>Kategorie</label>
+        <select id="setupCat">
+          <option value="all">Alle Kategorien</option>
+          <option value="basics">👋 Basisphrasen</option>
+          <option value="restaurant">🍽️ Restaurant & Café</option>
+          <option value="shopping">🛍️ Einkaufen</option>
+          <option value="transport">🚂 Transport</option>
+          <option value="unterkunft">🏨 Unterkunft</option>
+          <option value="notfall">🆘 Notfall</option>
+          <option value="zahlen">🔢 Zahlen</option>
+          <option value="zeit">🕐 Zeit & Wetter</option>
+        </select>
+      </div>
+      <div class="setup-row">
+        <label>Abfragerichtung</label>
+        <div class="dir-toggle">
+          <button class="dir-btn active" data-dir="de2fr" onclick="setDir(this)">DE → FR</button>
+          <button class="dir-btn" data-dir="fr2de" onclick="setDir(this)">FR → DE</button>
+          <button class="dir-btn" data-dir="mixed" onclick="setDir(this)">Gemischt</button>
+        </div>
+      </div>
+      <div class="setup-row">
+        <label>Anzahl Vokabeln: <span class="range-val" id="countVal">20</span></label>
+        <input type="range" id="setupCount" min="5" max="50" step="5" value="20"
+          oninput="document.getElementById('countVal').textContent=this.value">
+      </div>
+      <button class="start-btn" onclick="startTrainer()">Training starten →</button>
+    </div>
+
+    <!-- Quiz -->
+    <div id="trainerQuiz" style="display:none">
+      <div class="trainer-progress">
+        <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+        <span class="progress-label" id="progressLabel">1 / 20</span>
+      </div>
+
+      <div class="flashcard-scene" onclick="flipCard()">
+        <div class="flashcard" id="flashcard">
+          <div class="flashcard-face flashcard-front">
+            <button class="fc-speak" id="fcSpeakFront" onclick="event.stopPropagation();speakCard('front')" style="display:none">🔊</button>
+            <div class="fc-hint" id="fcHintFront">Deutsch</div>
+            <div class="fc-word" id="fcWordFront">…</div>
+            <div class="tap-hint">Tippen zum Aufdecken</div>
+          </div>
+          <div class="flashcard-face flashcard-back">
+            <button class="fc-speak" id="fcSpeakBack" onclick="event.stopPropagation();speakCard('back')" style="display:none">🔊</button>
+            <div class="fc-hint" id="fcHintBack">Français</div>
+            <div class="fc-word" id="fcWordBack">…</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="reveal-btn" id="revealBtn" onclick="flipCard()">Lösung anzeigen 👁</button>
+      <div class="answer-btns" id="answerBtns" style="display:none">
+        <button class="ans-btn wrong"   onclick="answer(false)">✗ Nochmal lernen</button>
+        <button class="ans-btn correct" onclick="answer(true)">✓ Gewusst!</button>
+      </div>
+    </div>
+
+    <!-- Result -->
+    <div id="trainerResult" style="display:none" class="result-screen">
+      <div class="result-emoji" id="resultEmoji">🎉</div>
+      <h2 id="resultTitle">Super!</h2>
+      <p id="resultSub"></p>
+      <div class="score-row">
+        <div class="score-item"><div class="score-num good" id="scoreCorrect">0</div><div class="score-label">Gewusst ✓</div></div>
+        <div class="score-item"><div class="score-num bad"  id="scoreWrong">0</div><div class="score-label">Noch lernen ✗</div></div>
+        <div class="score-item"><div class="score-num pct"  id="scorePercent">0%</div><div class="score-label">Trefferquote</div></div>
+      </div>
+      <div class="result-actions">
+        <button class="res-btn primary"   onclick="startTrainer()">Nochmal</button>
+        <button class="res-btn secondary" onclick="showSetup()">Neue Einstellungen</button>
+        <button class="res-btn secondary" onclick="setMode('list')">Zur Liste</button>
+      </div>
+      <div class="missed-list" id="missedList"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────
+const data = {
+  basics: {
+    icon:'👋', title:'Basisphrasen & Höflichkeit',
+    items:[
+      {fr:'Bonjour',de:'Guten Tag / Hallo'},
+      {fr:'Bonsoir',de:'Guten Abend'},
+      {fr:'Bonne nuit',de:'Gute Nacht'},
+      {fr:'Au revoir',de:'Auf Wiedersehen'},
+      {fr:'Salut !',de:'Hi! / Tschüss! (informell)'},
+      {fr:'Merci',de:'Danke'},
+      {fr:'Merci beaucoup',de:'Vielen Dank'},
+      {fr:'De rien',de:'Bitte / Gern geschehen'},
+      {fr:"S'il vous plaît",de:'Bitte (formell)'},
+      {fr:'Excusez-moi',de:'Entschuldigung (formell)'},
+      {fr:'Pardon',de:'Entschuldigung / Verzeihung'},
+      {fr:'Oui / Non',de:'Ja / Nein'},
+      {fr:'Je ne comprends pas',de:'Ich verstehe nicht'},
+      {fr:'Parlez-vous allemand ?',de:'Sprechen Sie Deutsch?'},
+      {fr:'Parlez-vous anglais ?',de:'Sprechen Sie Englisch?'},
+      {fr:"Plus lentement, s'il vous plaît",de:'Bitte langsamer'},
+      {fr:'Comment vous appelez-vous ?',de:'Wie heißen Sie?'},
+      {fr:"Je m'appelle …",de:'Ich heiße …'},
+      {fr:'Ça va ?',de:"Wie geht's?"},
+      {fr:'Très bien, merci',de:'Sehr gut, danke'},
+    ]
+  },
+  restaurant:{
+    icon:'🍽️', title:'Restaurant & Café',
+    items:[
+      {fr:'Une table pour deux',de:'Ein Tisch für zwei Personen'},
+      {fr:'La carte / le menu',de:'Die Speisekarte / das Menü'},
+      {fr:'La carte des vins',de:'Die Weinkarte'},
+      {fr:'Je voudrais …',de:'Ich hätte gerne …'},
+      {fr:"Qu'est-ce que vous recommandez ?",de:'Was empfehlen Sie?'},
+      {fr:"C'est quoi ça ?",de:'Was ist das?'},
+      {fr:'Sans gluten',de:'Glutenfrei'},
+      {fr:'Je suis végétarien(ne)',de:'Ich bin Vegetarier/in'},
+      {fr:'Je suis allergique à …',de:'Ich bin allergisch gegen …'},
+      {fr:"L'addition, s'il vous plaît",de:'Die Rechnung bitte'},
+      {fr:"C'est délicieux !",de:'Das ist köstlich!'},
+      {fr:'Un café',de:'Ein Kaffee (Espresso)'},
+      {fr:'Un café au lait',de:'Kaffee mit Milch'},
+      {fr:'Un verre de vin rouge/blanc',de:'Ein Glas Rot-/Weißwein'},
+      {fr:"De l'eau, s'il vous plaît",de:'Wasser bitte'},
+      {fr:'Une baguette',de:'Ein Baguette'},
+      {fr:'Le petit-déjeuner',de:'Das Frühstück'},
+      {fr:'Le déjeuner',de:'Das Mittagessen'},
+      {fr:'Le dîner',de:'Das Abendessen'},
+      {fr:'Pourboire',de:'Trinkgeld'},
+      {fr:'Carte bancaire acceptée ?',de:'Wird Karte akzeptiert?'},
+    ]
+  },
+  shopping:{
+    icon:'🛍️', title:'Einkaufen & Markt',
+    items:[
+      {fr:'Combien ça coûte ?',de:'Was kostet das?'},
+      {fr:"C'est trop cher",de:'Das ist zu teuer'},
+      {fr:'Je regarde seulement',de:'Ich schaue nur'},
+      {fr:'Avez-vous … ?',de:'Haben Sie …?'},
+      {fr:'En quelle taille ?',de:'In welcher Größe?'},
+      {fr:'Petit / Moyen / Grand',de:'Klein / Mittel / Groß'},
+      {fr:"Puis-je l'essayer ?",de:'Kann ich das anprobieren?'},
+      {fr:"La cabine d'essayage",de:'Die Umkleidekabine'},
+      {fr:'Je le prends',de:'Ich nehme es'},
+      {fr:'En espèces / par carte',de:'Bar / mit Karte'},
+      {fr:'Le reçu',de:'Der Kassenbon / die Quittung'},
+      {fr:'La boulangerie',de:'Die Bäckerei'},
+      {fr:'La pharmacie',de:'Die Apotheke'},
+      {fr:'Le supermarché',de:'Der Supermarkt'},
+      {fr:'Le marché',de:'Der Markt'},
+      {fr:'Ouvert / Fermé',de:'Geöffnet / Geschlossen'},
+      {fr:"Les heures d'ouverture",de:'Die Öffnungszeiten'},
+      {fr:'Soldes',de:'Ausverkauf / Sale'},
+    ]
+  },
+  transport:{
+    icon:'🚂', title:'Transport & Orientierung',
+    items:[
+      {fr:'Où est … ?',de:'Wo ist …?'},
+      {fr:'Comment aller à … ?',de:'Wie komme ich zu …?'},
+      {fr:'Tout droit',de:'Geradeaus'},
+      {fr:'À gauche / À droite',de:'Links / Rechts'},
+      {fr:"Près d'ici / Loin",de:'In der Nähe / Weit'},
+      {fr:'La gare',de:'Der Bahnhof'},
+      {fr:"L'aéroport",de:'Der Flughafen'},
+      {fr:'Le métro',de:'Die U-Bahn'},
+      {fr:"L'arrêt de bus",de:'Die Bushaltestelle'},
+      {fr:'Un billet aller simple',de:'Eine Fahrkarte (einfach)'},
+      {fr:'Un billet aller-retour',de:'Eine Hin- und Rückfahrkarte'},
+      {fr:'Le prochain train pour …',de:'Der nächste Zug nach …'},
+      {fr:'À quelle heure part … ?',de:'Wann fährt … ab?'},
+      {fr:"Un taxi, s'il vous plaît",de:'Ein Taxi bitte'},
+      {fr:'La location de voiture',de:'Der Mietwagen'},
+      {fr:'Faire le plein',de:'Tanken'},
+      {fr:'Le parking',de:'Der Parkplatz'},
+      {fr:'La carte routière',de:'Die Straßenkarte'},
+    ]
+  },
+  unterkunft:{
+    icon:'🏨', title:'Unterkunft & Hotel',
+    items:[
+      {fr:'Une réservation au nom de …',de:'Eine Reservierung auf den Namen …'},
+      {fr:'Avez-vous une chambre libre ?',de:'Haben Sie ein freies Zimmer?'},
+      {fr:'Une chambre simple',de:'Ein Einzelzimmer'},
+      {fr:'Une chambre double',de:'Ein Doppelzimmer'},
+      {fr:'Avec salle de bain',de:'Mit Badezimmer'},
+      {fr:'Le check-in / check-out',de:'Einchecken / Auschecken'},
+      {fr:'À quelle heure est le check-out ?',de:'Wann ist der Check-out?'},
+      {fr:'Le petit-déjeuner est inclus ?',de:'Ist das Frühstück inklusive?'},
+      {fr:'La clé de chambre',de:'Der Zimmerschlüssel'},
+      {fr:'Le WiFi',de:'Das WLAN'},
+      {fr:'Quel est le mot de passe ?',de:'Was ist das Passwort?'},
+      {fr:"L'ascenseur",de:'Der Aufzug / Fahrstuhl'},
+      {fr:'Il y a un problème avec …',de:'Es gibt ein Problem mit …'},
+      {fr:"Pouvez-vous m'aider ?",de:'Können Sie mir helfen?'},
+      {fr:'La piscine',de:'Der Pool / das Schwimmbad'},
+    ]
+  },
+  notfall:{
+    icon:'🆘', title:'Notfall & Gesundheit',
+    items:[
+      {fr:'Au secours !',de:'Hilfe!'},
+      {fr:'Appelez la police !',de:'Rufen Sie die Polizei!'},
+      {fr:'Appelez une ambulance !',de:'Rufen Sie einen Krankenwagen!'},
+      {fr:"J'ai besoin d'un médecin",de:'Ich brauche einen Arzt'},
+      {fr:'Je suis malade',de:'Ich bin krank'},
+      {fr:"J'ai mal à … (la tête / le ventre)",de:'Ich habe … Schmerzen (Kopf/Bauch)'},
+      {fr:"J'ai perdu mon passeport",de:'Ich habe meinen Pass verloren'},
+      {fr:"On m'a volé",de:'Ich wurde bestohlen'},
+      {fr:"L'hôpital",de:'Das Krankenhaus'},
+      {fr:'La pharmacie de garde',de:'Die Notfallapotheke'},
+      {fr:'Les urgences',de:'Die Notaufnahme'},
+      {fr:'Numéros urgence: 15/17/18',de:'Notruf: Samu/Polizei/Feuerwehr'},
+      {fr:'Je suis assuré(e)',de:'Ich bin versichert'},
+      {fr:'Mon assurance maladie',de:'Meine Krankenversicherung'},
+    ]
+  },
+  zahlen:{
+    icon:'🔢', title:'Zahlen',
+    items:[
+      {fr:'Zéro / Un / Deux',de:'0 / 1 / 2'},
+      {fr:'Trois / Quatre / Cinq',de:'3 / 4 / 5'},
+      {fr:'Six / Sept / Huit',de:'6 / 7 / 8'},
+      {fr:'Neuf / Dix',de:'9 / 10'},
+      {fr:'Onze / Douze / Treize',de:'11 / 12 / 13'},
+      {fr:'Quatorze / Quinze',de:'14 / 15'},
+      {fr:'Vingt / Trente',de:'20 / 30'},
+      {fr:'Quarante / Cinquante',de:'40 / 50'},
+      {fr:'Soixante',de:'60'},
+      {fr:'Soixante-dix',de:'70 (wörtl. sechzig-zehn)'},
+      {fr:'Quatre-vingts',de:'80 (wörtl. vier-zwanzig)'},
+      {fr:'Quatre-vingt-dix',de:'90 (wörtl. vier-zwanzig-zehn)'},
+      {fr:'Cent / Mille',de:'100 / 1000'},
+      {fr:'Premier / Deuxième',de:'Erste/r / Zweite/r'},
+    ]
+  },
+  zeit:{
+    icon:'🕐', title:'Zeit & Wetter',
+    items:[
+      {fr:"Aujourd'hui / Demain",de:'Heute / Morgen'},
+      {fr:"Hier / Après-demain",de:'Gestern / Übermorgen'},
+      {fr:'Matin / Après-midi / Soir',de:'Morgen / Nachmittag / Abend'},
+      {fr:'Quelle heure est-il ?',de:'Wie viel Uhr ist es?'},
+      {fr:'Il est … heures',de:'Es ist … Uhr'},
+      {fr:'Maintenant / Bientôt',de:'Jetzt / Bald'},
+      {fr:'Lundi / Mardi / Mercredi',de:'Montag / Dienstag / Mittwoch'},
+      {fr:'Jeudi / Vendredi',de:'Donnerstag / Freitag'},
+      {fr:'Samedi / Dimanche',de:'Samstag / Sonntag'},
+      {fr:'Il fait beau',de:'Es ist schönes Wetter'},
+      {fr:'Il pleut',de:'Es regnet'},
+      {fr:'Il fait chaud / froid',de:'Es ist heiß / kalt'},
+      {fr:'Le soleil brille',de:'Die Sonne scheint'},
+    ]
+  }
+};
+
+// ── SPEECH ────────────────────────────────────────────
+function speak(text, lang) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = lang || 'fr-FR';
+  u.rate = 0.88;
+  window.speechSynthesis.speak(u);
+}
+
+// ── MODE ──────────────────────────────────────────────
+function setMode(mode) {
+  const isList = mode === 'list';
+  document.getElementById('listSection').classList.toggle('hidden', !isList);
+  document.getElementById('trainerSection').classList.toggle('active', !isList);
+  document.getElementById('btnList').classList.toggle('active', isList);
+  document.getElementById('btnTrainer').classList.toggle('active', !isList);
+  if (!isList) showSetup();
+}
+
+// ── LIST MODE ─────────────────────────────────────────
+let currentCat = 'all', searchTerm = '';
+
+function render() {
+  const main = document.getElementById('main');
+  let html = '';
+  const cats = currentCat === 'all' ? Object.keys(data) : [currentCat];
+  let hasResults = false;
+
+  html += `<div class="tip-box">
+    <span class="tip-icon">💡</span>
+    <p><strong>Tipp:</strong> Karte anklicken zum Umdrehen. <strong>🔊</strong> spricht die französische Aussprache vor. Im Trainer-Modus oben kannst du dich abfragen lassen.</p>
+  </div>`;
+
+  cats.forEach(cat => {
+    const sec = data[cat];
+    const items = sec.items.filter(it =>
+      !searchTerm || it.fr.toLowerCase().includes(searchTerm) || it.de.toLowerCase().includes(searchTerm)
+    );
+    if (!items.length) return;
+    hasResults = true;
+
+    html += `<div class="category">
+      <div class="category-header">
+        <span class="category-icon">${sec.icon}</span>
+        <span class="category-title">${sec.title}</span>
+        <span class="category-count">${items.length} Vokabeln</span>
+      </div>
+      <div class="vocab-grid">`;
+
+    items.forEach(it => {
+      const safe = it.fr.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      html += `<div class="vocab-card" onclick="this.classList.toggle('flipped')">
+        <div class="card-text">
+          <div class="fr">${it.fr}</div>
+          <div class="de">${it.de}</div>
+        </div>
+        <button class="speak-btn" title="Aussprache anhören"
+          onclick="event.stopPropagation();speakList(this,'${safe}')">🔊</button>
+      </div>`;
+    });
+    html += `</div></div>`;
+  });
+
+  if (!hasResults) html += `<div class="empty"><div class="emoji">🔍</div><p>Keine Ergebnisse für „${searchTerm}"</p></div>`;
+  main.innerHTML = html;
+}
+
+function speakList(btn, text) {
+  btn.classList.add('speaking');
+  speak(text, 'fr-FR');
+  setTimeout(() => btn.classList.remove('speaking'), 1800);
+}
+
+document.getElementById('filterTabs').addEventListener('click', e => {
+  if (!e.target.classList.contains('tab')) return;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  e.target.classList.add('active');
+  currentCat = e.target.dataset.cat;
+  render();
+});
+document.getElementById('searchInput').addEventListener('input', e => {
+  searchTerm = e.target.value.toLowerCase().trim();
+  if (searchTerm) {
+    currentCat = 'all';
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('[data-cat="all"]').classList.add('active');
+  }
+  render();
+});
+render();
+
+// ── TRAINER ───────────────────────────────────────────
+let quiz = { cards:[], idx:0, correct:0, wrong:0, missed:[], dir:'de2fr', revealed:false };
+
+function setDir(btn) {
+  document.querySelectorAll('.dir-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function showSetup() {
+  document.getElementById('trainerSetup').style.display  = 'block';
+  document.getElementById('trainerQuiz').style.display   = 'none';
+  document.getElementById('trainerResult').style.display = 'none';
+}
+
+function shuffle(a) {
+  for (let i = a.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function startTrainer() {
+  const cat   = document.getElementById('setupCat').value;
+  const count = parseInt(document.getElementById('setupCount').value);
+  const dir   = document.querySelector('.dir-btn.active').dataset.dir;
+
+  let pool = [];
+  (cat === 'all' ? Object.keys(data) : [cat]).forEach(c => pool.push(...data[c].items));
+  shuffle(pool);
+  pool = pool.slice(0, Math.min(count, pool.length));
+
+  quiz = { cards:pool, idx:0, correct:0, wrong:0, missed:[], dir, revealed:false };
+  document.getElementById('trainerSetup').style.display  = 'none';
+  document.getElementById('trainerQuiz').style.display   = 'block';
+  document.getElementById('trainerResult').style.display = 'none';
+  showCard();
+}
+
+function effectiveDir() {
+  if (quiz.dir === 'mixed') return quiz.idx % 2 === 0 ? 'de2fr' : 'fr2de';
+  return quiz.dir;
+}
+
+function showCard() {
+  quiz.revealed = false;
+  const card = quiz.cards[quiz.idx];
+  const dir  = effectiveDir();
+
+  document.getElementById('flashcard').classList.remove('flipped');
+
+  const frontTxt = dir === 'de2fr' ? card.de : card.fr;
+  const backTxt  = dir === 'de2fr' ? card.fr : card.de;
+  const isFrFront = dir === 'fr2de';
+  const isFrBack  = dir === 'de2fr';
+
+  document.getElementById('fcHintFront').textContent = isFrFront ? 'Français' : 'Deutsch';
+  document.getElementById('fcWordFront').textContent = frontTxt;
+  document.getElementById('fcHintBack').textContent  = isFrBack  ? 'Français' : 'Deutsch';
+  document.getElementById('fcWordBack').textContent  = backTxt;
+
+  document.getElementById('fcSpeakFront').style.display = isFrFront ? 'flex' : 'none';
+  document.getElementById('fcSpeakBack').style.display  = isFrBack  ? 'flex' : 'none';
+
+  document.getElementById('revealBtn').style.display  = 'block';
+  document.getElementById('answerBtns').style.display = 'none';
+
+  const total = quiz.cards.length;
+  document.getElementById('progressFill').style.width  = (quiz.idx / total * 100) + '%';
+  document.getElementById('progressLabel').textContent = `${quiz.idx+1} / ${total}`;
+}
+
+function flipCard() {
+  if (quiz.revealed) return;
+  quiz.revealed = true;
+  document.getElementById('flashcard').classList.add('flipped');
+  document.getElementById('revealBtn').style.display  = 'none';
+  document.getElementById('answerBtns').style.display = 'flex';
+
+  // auto-speak the French side when revealed
+  const card = quiz.cards[quiz.idx];
+  speak(card.fr, 'fr-FR');
+}
+
+function speakCard(side) {
+  const card = quiz.cards[quiz.idx];
+  const dir  = effectiveDir();
+  const isFrSide = (side === 'front' && dir === 'fr2de') || (side === 'back' && dir === 'de2fr');
+  speak(isFrSide ? card.fr : card.de, isFrSide ? 'fr-FR' : 'de-DE');
+}
+
+function answer(correct) {
+  const card = quiz.cards[quiz.idx];
+  if (correct) quiz.correct++;
+  else { quiz.wrong++; quiz.missed.push(card); }
+  quiz.idx++;
+  if (quiz.idx >= quiz.cards.length) { showResult(); return; }
+  showCard();
+}
+
+function showResult() {
+  document.getElementById('trainerQuiz').style.display   = 'none';
+  document.getElementById('trainerResult').style.display = 'block';
+  const total = quiz.cards.length;
+  const pct   = Math.round(quiz.correct / total * 100);
+  document.getElementById('resultEmoji').textContent  = pct >= 80 ? '🎉' : pct >= 50 ? '👍' : '💪';
+  document.getElementById('resultTitle').textContent  = pct >= 80 ? 'Fantastisch!' : pct >= 50 ? 'Gut gemacht!' : 'Weiter üben!';
+  document.getElementById('resultSub').textContent    = `Du hast ${quiz.correct} von ${total} Vokabeln gewusst.`;
+  document.getElementById('scoreCorrect').textContent = quiz.correct;
+  document.getElementById('scoreWrong').textContent   = quiz.wrong;
+  document.getElementById('scorePercent').textContent = pct + '%';
+
+  let mHtml = '';
+  if (quiz.missed.length) {
+    mHtml = `<div class="missed-list"><h3>Noch lernen (${quiz.missed.length})</h3>`;
+    quiz.missed.forEach(m => {
+      const safe = m.fr.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      mHtml += `<div class="missed-item">
+        <span class="missed-fr">${m.fr}</span>
+        <span class="missed-de">${m.de}</span>
+        <button class="speak-btn" onclick="speak('${safe}','fr-FR')" style="flex-shrink:0">🔊</button>
+      </div>`;
+    });
+    mHtml += '</div>';
+  }
+  document.getElementById('missedList').innerHTML = mHtml;
+}
+</script>
+</body>
+</html>
