@@ -113,6 +113,12 @@
 
   .empty { text-align:center; padding:3rem 1rem; color:var(--muted); }
   .empty .emoji { font-size:2rem; margin-bottom:.5rem; }
+  .lookup-btn {
+    display:inline-block; padding:.65rem 1.2rem; border-radius:50px;
+    color:#fff; font-family:'DM Sans',sans-serif; font-size:.88rem; font-weight:600;
+    text-decoration:none; transition:opacity .2s;
+  }
+  .lookup-btn:hover { opacity:.85; }
 
   /* TRAINER */
   #trainerSection { display:none; }
@@ -602,7 +608,18 @@ function render() {
     html += `</div></div>`;
   });
 
-  if (!hasResults) html += `<div class="empty"><div class="emoji">🔍</div><p>Keine Ergebnisse für „${searchTerm}"</p></div>`;
+  if (!hasResults) {
+    const q = encodeURIComponent(document.getElementById('searchInput').value.trim());
+    const raw = document.getElementById('searchInput').value.trim();
+    html += `<div class="empty">
+      <div class="emoji">🔍</div>
+      <p style="margin-bottom:1.2rem">„${raw}" ist nicht in der Liste — direkt nachschlagen:</p>
+      <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap">
+        <a href="https://www.deepl.com/translator#de/fr/${q}" target="_blank" class="lookup-btn" style="background:var(--bleu)">🌐 DeepL übersetzen</a>
+        <a href="https://www.dict.cc/?s=${q}" target="_blank" class="lookup-btn" style="background:#555">📖 dict.cc nachschlagen</a>
+      </div>
+    </div>`;
+  }
   main.innerHTML = html;
 }
 
