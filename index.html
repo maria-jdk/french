@@ -120,6 +120,30 @@
   }
   .lookup-btn:hover { opacity:.85; }
 
+  .translate-box {
+    background:#fff; border:1px solid #ede8e0; border-radius:16px;
+    padding:1.2rem; max-width:480px; margin:0 auto; text-align:left;
+  }
+  .translate-langs { display:flex; gap:.5rem; margin-bottom:1rem; }
+  .lang-btn {
+    flex:1; padding:.45rem; border-radius:50px; border:2px solid #e0dbd2;
+    background:#fff; font-family:'DM Sans',sans-serif; font-size:.85rem;
+    cursor:pointer; transition:all .2s; color:var(--muted); font-weight:500;
+  }
+  .lang-btn.active { background:var(--bleu); border-color:var(--bleu); color:#fff; }
+  .translate-result {
+    min-height:3rem; display:flex; align-items:center;
+    font-family:'Playfair Display',serif; font-size:1.4rem; color:var(--bleu);
+    border-bottom:1px solid #ede8e0; padding-bottom:.75rem; margin-bottom:.75rem;
+  }
+  .translate-loading { font-family:'DM Sans',sans-serif; font-size:.9rem; color:var(--muted); font-style:italic; }
+  .translate-error   { font-family:'DM Sans',sans-serif; font-size:.9rem; color:var(--rouge); }
+  .translate-speak {
+    color:var(--bleu); font-size:.85rem; padding:.35rem .7rem;
+    border:1px solid #e0dbd2; border-radius:8px;
+  }
+  .translate-speak:hover { background:#f0ece5; }
+
   /* TRAINER */
   #trainerSection { display:none; }
   #trainerSection.active { display:block; }
@@ -397,26 +421,26 @@ const data = {
   restaurant:{
     icon:'🍽️', title:'Restaurant & Café',
     items:[
-      {fr:'Une table pour deux',de:'Ein Tisch für zwei Personen'},
-      {fr:'La carte / le menu',de:'Die Speisekarte / das Menü'},
-      {fr:'La carte des vins',de:'Die Weinkarte'},
+      {fr:'une table (f) pour deux',de:'ein Tisch für zwei Personen'},
+      {fr:'la carte (f) / le menu (m)',de:'die Speisekarte / das Menü'},
+      {fr:'la carte des vins (f)',de:'die Weinkarte'},
       {fr:'Je voudrais …',de:'Ich hätte gerne …'},
       {fr:"Qu'est-ce que vous recommandez ?",de:'Was empfehlen Sie?'},
       {fr:"C'est quoi ça ?",de:'Was ist das?'},
       {fr:'Sans gluten',de:'Glutenfrei'},
       {fr:'Je suis végétarien(ne)',de:'Ich bin Vegetarier/in'},
       {fr:'Je suis allergique à …',de:'Ich bin allergisch gegen …'},
-      {fr:"L'addition, s'il vous plaît",de:'Die Rechnung bitte'},
+      {fr:"L'addition (f), s'il vous plaît",de:'die Rechnung bitte'},
       {fr:"C'est délicieux !",de:'Das ist köstlich!'},
-      {fr:'Un café',de:'Ein Kaffee (Espresso)'},
-      {fr:'Un café au lait',de:'Kaffee mit Milch'},
-      {fr:'Un verre de vin rouge/blanc',de:'Ein Glas Rot-/Weißwein'},
-      {fr:"De l'eau, s'il vous plaît",de:'Wasser bitte'},
-      {fr:'Une baguette',de:'Ein Baguette'},
-      {fr:'Le petit-déjeuner',de:'Das Frühstück'},
-      {fr:'Le déjeuner',de:'Das Mittagessen'},
-      {fr:'Le dîner',de:'Das Abendessen'},
-      {fr:'Pourboire',de:'Trinkgeld'},
+      {fr:'un café (m)',de:'ein Kaffee (Espresso)'},
+      {fr:'un café au lait (m)',de:'Kaffee mit Milch'},
+      {fr:'un verre (m) de vin rouge/blanc',de:'ein Glas Rot-/Weißwein'},
+      {fr:"De l'eau (f), s'il vous plaît",de:'Wasser bitte'},
+      {fr:'une baguette (f)',de:'ein Baguette'},
+      {fr:'le petit-déjeuner (m)',de:'das Frühstück'},
+      {fr:'le déjeuner (m)',de:'das Mittagessen'},
+      {fr:'le dîner (m)',de:'das Abendessen'},
+      {fr:'le pourboire (m)',de:'das Trinkgeld'},
       {fr:'Carte bancaire acceptée ?',de:'Wird Karte akzeptiert?'},
     ]
   },
@@ -430,17 +454,17 @@ const data = {
       {fr:'En quelle taille ?',de:'In welcher Größe?'},
       {fr:'Petit / Moyen / Grand',de:'Klein / Mittel / Groß'},
       {fr:"Puis-je l'essayer ?",de:'Kann ich das anprobieren?'},
-      {fr:"La cabine d'essayage",de:'Die Umkleidekabine'},
+      {fr:"la cabine d'essayage (f)",de:'die Umkleidekabine'},
       {fr:'Je le prends',de:'Ich nehme es'},
       {fr:'En espèces / par carte',de:'Bar / mit Karte'},
-      {fr:'Le reçu',de:'Der Kassenbon / die Quittung'},
-      {fr:'La boulangerie',de:'Die Bäckerei'},
-      {fr:'La pharmacie',de:'Die Apotheke'},
-      {fr:'Le supermarché',de:'Der Supermarkt'},
-      {fr:'Le marché',de:'Der Markt'},
+      {fr:'le reçu (m)',de:'der Kassenbon / die Quittung'},
+      {fr:'la boulangerie (f)',de:'die Bäckerei'},
+      {fr:'la pharmacie (f)',de:'die Apotheke'},
+      {fr:'le supermarché (m)',de:'der Supermarkt'},
+      {fr:'le marché (m)',de:'der Markt'},
       {fr:'Ouvert / Fermé',de:'Geöffnet / Geschlossen'},
-      {fr:"Les heures d'ouverture",de:'Die Öffnungszeiten'},
-      {fr:'Soldes',de:'Ausverkauf / Sale'},
+      {fr:"les heures d'ouverture (f pl)",de:'die Öffnungszeiten'},
+      {fr:'les soldes (m pl)',de:'der Ausverkauf / Sale'},
     ]
   },
   transport:{
@@ -451,58 +475,58 @@ const data = {
       {fr:'Tout droit',de:'Geradeaus'},
       {fr:'À gauche / À droite',de:'Links / Rechts'},
       {fr:"Près d'ici / Loin",de:'In der Nähe / Weit'},
-      {fr:'La gare',de:'Der Bahnhof'},
-      {fr:"L'aéroport",de:'Der Flughafen'},
-      {fr:'Le métro',de:'Die U-Bahn'},
-      {fr:"L'arrêt de bus",de:'Die Bushaltestelle'},
-      {fr:'Un billet aller simple',de:'Eine Fahrkarte (einfach)'},
-      {fr:'Un billet aller-retour',de:'Eine Hin- und Rückfahrkarte'},
-      {fr:'Le prochain train pour …',de:'Der nächste Zug nach …'},
+      {fr:'la gare (f)',de:'der Bahnhof'},
+      {fr:"l'aéroport (m)",de:'der Flughafen'},
+      {fr:'le métro (m)',de:'die U-Bahn'},
+      {fr:"l'arrêt de bus (m)",de:'die Bushaltestelle'},
+      {fr:'un billet (m) aller simple',de:'eine Fahrkarte (einfach)'},
+      {fr:'un billet (m) aller-retour',de:'eine Hin- und Rückfahrkarte'},
+      {fr:'le prochain train (m) pour …',de:'der nächste Zug nach …'},
       {fr:'À quelle heure part … ?',de:'Wann fährt … ab?'},
-      {fr:"Un taxi, s'il vous plaît",de:'Ein Taxi bitte'},
-      {fr:'La location de voiture',de:'Der Mietwagen'},
+      {fr:"un taxi (m), s'il vous plaît",de:'ein Taxi bitte'},
+      {fr:'la location de voiture (f)',de:'der Mietwagen'},
       {fr:'Faire le plein',de:'Tanken'},
-      {fr:'Le parking',de:'Der Parkplatz'},
-      {fr:'La carte routière',de:'Die Straßenkarte'},
+      {fr:'le parking (m)',de:'der Parkplatz'},
+      {fr:'la carte routière (f)',de:'die Straßenkarte'},
     ]
   },
   unterkunft:{
     icon:'🏨', title:'Unterkunft & Hotel',
     items:[
-      {fr:'Une réservation au nom de …',de:'Eine Reservierung auf den Namen …'},
+      {fr:'une réservation (f) au nom de …',de:'eine Reservierung auf den Namen …'},
       {fr:'Avez-vous une chambre libre ?',de:'Haben Sie ein freies Zimmer?'},
-      {fr:'Une chambre simple',de:'Ein Einzelzimmer'},
-      {fr:'Une chambre double',de:'Ein Doppelzimmer'},
-      {fr:'Avec salle de bain',de:'Mit Badezimmer'},
-      {fr:'Le check-in / check-out',de:'Einchecken / Auschecken'},
+      {fr:'une chambre simple (f)',de:'ein Einzelzimmer'},
+      {fr:'une chambre double (f)',de:'ein Doppelzimmer'},
+      {fr:'Avec salle de bain (f)',de:'mit Badezimmer'},
+      {fr:'le check-in (m) / le check-out (m)',de:'Einchecken / Auschecken'},
       {fr:'À quelle heure est le check-out ?',de:'Wann ist der Check-out?'},
       {fr:'Le petit-déjeuner est inclus ?',de:'Ist das Frühstück inklusive?'},
-      {fr:'La clé de chambre',de:'Der Zimmerschlüssel'},
-      {fr:'Le WiFi',de:'Das WLAN'},
-      {fr:'Quel est le mot de passe ?',de:'Was ist das Passwort?'},
-      {fr:"L'ascenseur",de:'Der Aufzug / Fahrstuhl'},
-      {fr:'Il y a un problème avec …',de:'Es gibt ein Problem mit …'},
+      {fr:'la clé de chambre (f)',de:'der Zimmerschlüssel'},
+      {fr:'le WiFi (m)',de:'das WLAN'},
+      {fr:'Quel est le mot de passe (m) ?',de:'Was ist das Passwort?'},
+      {fr:"l'ascenseur (m)",de:'der Aufzug / Fahrstuhl'},
+      {fr:'Il y a un problème (m) avec …',de:'Es gibt ein Problem mit …'},
       {fr:"Pouvez-vous m'aider ?",de:'Können Sie mir helfen?'},
-      {fr:'La piscine',de:'Der Pool / das Schwimmbad'},
+      {fr:'la piscine (f)',de:'der Pool / das Schwimmbad'},
     ]
   },
   notfall:{
     icon:'🆘', title:'Notfall & Gesundheit',
     items:[
       {fr:'Au secours !',de:'Hilfe!'},
-      {fr:'Appelez la police !',de:'Rufen Sie die Polizei!'},
-      {fr:'Appelez une ambulance !',de:'Rufen Sie einen Krankenwagen!'},
-      {fr:"J'ai besoin d'un médecin",de:'Ich brauche einen Arzt'},
+      {fr:'Appelez la police (f) !',de:'Rufen Sie die Polizei!'},
+      {fr:'Appelez une ambulance (f) !',de:'Rufen Sie einen Krankenwagen!'},
+      {fr:"J'ai besoin d'un médecin (m)",de:'Ich brauche einen Arzt'},
       {fr:'Je suis malade',de:'Ich bin krank'},
-      {fr:"J'ai mal à … (la tête / le ventre)",de:'Ich habe … Schmerzen (Kopf/Bauch)'},
-      {fr:"J'ai perdu mon passeport",de:'Ich habe meinen Pass verloren'},
+      {fr:"J'ai mal à … (la tête (f) / le ventre (m))",de:'Ich habe … Schmerzen (Kopf/Bauch)'},
+      {fr:"J'ai perdu mon passeport (m)",de:'Ich habe meinen Pass verloren'},
       {fr:"On m'a volé",de:'Ich wurde bestohlen'},
-      {fr:"L'hôpital",de:'Das Krankenhaus'},
-      {fr:'La pharmacie de garde',de:'Die Notfallapotheke'},
-      {fr:'Les urgences',de:'Die Notaufnahme'},
+      {fr:"l'hôpital (m)",de:'das Krankenhaus'},
+      {fr:'la pharmacie de garde (f)',de:'die Notfallapotheke'},
+      {fr:'les urgences (f pl)',de:'die Notaufnahme'},
       {fr:'Numéros urgence: 15/17/18',de:'Notruf: Samu/Polizei/Feuerwehr'},
       {fr:'Je suis assuré(e)',de:'Ich bin versichert'},
-      {fr:'Mon assurance maladie',de:'Meine Krankenversicherung'},
+      {fr:"l'assurance maladie (f)",de:'die Krankenversicherung'},
     ]
   },
   zahlen:{
@@ -529,7 +553,7 @@ const data = {
     items:[
       {fr:"Aujourd'hui / Demain",de:'Heute / Morgen'},
       {fr:"Hier / Après-demain",de:'Gestern / Übermorgen'},
-      {fr:'Matin / Après-midi / Soir',de:'Morgen / Nachmittag / Abend'},
+      {fr:'le matin (m) / l\'après-midi (m) / le soir (m)',de:'Morgen / Nachmittag / Abend'},
       {fr:'Quelle heure est-il ?',de:'Wie viel Uhr ist es?'},
       {fr:'Il est … heures',de:'Es ist … Uhr'},
       {fr:'Maintenant / Bientôt',de:'Jetzt / Bald'},
@@ -609,16 +633,23 @@ function render() {
   });
 
   if (!hasResults) {
-    const q = encodeURIComponent(document.getElementById('searchInput').value.trim());
     const raw = document.getElementById('searchInput').value.trim();
     html += `<div class="empty">
       <div class="emoji">🔍</div>
-      <p style="margin-bottom:1.2rem">„${raw}" ist nicht in der Liste — direkt nachschlagen:</p>
-      <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap">
-        <a href="https://www.deepl.com/translator#de/fr/${q}" target="_blank" class="lookup-btn" style="background:var(--bleu)">🌐 DeepL übersetzen</a>
-        <a href="https://www.dict.cc/?s=${q}" target="_blank" class="lookup-btn" style="background:#555">📖 dict.cc nachschlagen</a>
+      <p style="margin-bottom:1.2rem">„${raw}" ist nicht in der Liste</p>
+      <div class="translate-box">
+        <div class="translate-langs">
+          <button class="lang-btn active" id="btnDE" onclick="setLang('de','fr')">DE → FR</button>
+          <button class="lang-btn" id="btnFR" onclick="setLang('fr','de')">FR → DE</button>
+        </div>
+        <div class="translate-result" id="translateResult">
+          <span class="translate-loading">Übersetze …</span>
+        </div>
+        <button class="speak-btn translate-speak" id="translateSpeak" style="display:none" onclick="speakTranslation()">🔊 Aussprache</button>
       </div>
     </div>`;
+    // auto-translate
+    setTimeout(() => translateWord(raw, 'de', 'fr'), 0);
   }
   main.innerHTML = html;
 }
@@ -647,7 +678,98 @@ document.getElementById('searchInput').addEventListener('input', e => {
 });
 render();
 
-// ── TRAINER ───────────────────────────────────────────
+// ── INLINE TRANSLATION ───────────────────────────────
+let currentTranslation = '';
+let currentTranslationLang = 'fr';
+let translateDir = { from: 'de', to: 'fr' };
+
+function setLang(from, to) {
+  translateDir = { from, to };
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(from === 'de' ? 'btnDE' : 'btnFR').classList.add('active');
+  const word = document.getElementById('searchInput').value.trim();
+  translateWord(word, from, to);
+}
+
+async function translateWord(word, from, to) {
+  const box = document.getElementById('translateResult');
+  const speakBtn = document.getElementById('translateSpeak');
+  if (!box) return;
+  box.innerHTML = '<span class="translate-loading">Übersetze …</span>';
+  if (speakBtn) speakBtn.style.display = 'none';
+
+  try {
+    // 1. Get translation
+    const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=${from}|${to}`);
+    const data = await res.json();
+    const translation = data.responseData?.translatedText;
+
+    if (!translation || data.responseStatus !== 200) {
+      box.innerHTML = '<span class="translate-error">Keine Übersetzung gefunden</span>';
+      return;
+    }
+
+    currentTranslation = translation;
+    currentTranslationLang = to === 'fr' ? 'fr-FR' : 'de-DE';
+
+    // 2. If translating to French, try to find article via Wiktionary
+    if (to === 'fr') {
+      // Extract the base word (first word, lowercase, strip punctuation)
+      const baseWord = translation.split(' ')[0].toLowerCase().replace(/[^a-zàâäéèêëïîôùûüç]/gi,'');
+      box.innerHTML = `<span style="font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--muted)">Suche Artikel …</span>`;
+
+      const article = await fetchFrenchArticle(baseWord);
+
+      if (article) {
+        const articleLabel = article === 'le' ? '(m)' : article === 'la' ? '(f)' : article === 'les' ? '(pl)' : '';
+        box.innerHTML = `
+          <div>
+            <span style="font-size:1rem;color:var(--muted);font-family:'DM Sans',sans-serif">${article} </span><span>${translation}</span>
+            <span style="font-size:.8rem;color:var(--muted);font-family:'DM Sans',sans-serif;margin-left:.4rem">${articleLabel}</span>
+          </div>`;
+        currentTranslation = `${article} ${translation}`;
+      } else {
+        box.textContent = translation;
+      }
+    } else {
+      box.textContent = translation;
+    }
+
+    if (speakBtn) speakBtn.style.display = 'inline-flex';
+
+  } catch(e) {
+    box.innerHTML = '<span class="translate-error">Kein Internetzugang verfügbar</span>';
+  }
+}
+
+async function fetchFrenchArticle(word) {
+  try {
+    const res = await fetch(`https://fr.wiktionary.org/w/api.php?action=parse&page=${encodeURIComponent(word)}&prop=wikitext&format=json&origin=*`);
+    const data = await res.json();
+    const wikitext = data?.parse?.wikitext?.['*'] || '';
+
+    // Look for gender markers in French Wiktionary templates
+    if (/\{\{fr-nom\|m\b/.test(wikitext) || /genre\s*=\s*m/.test(wikitext) || /\|m\|/.test(wikitext) || /masculin/.test(wikitext)) return 'le';
+    if (/\{\{fr-nom\|f\b/.test(wikitext) || /genre\s*=\s*f/.test(wikitext) || /\|f\|/.test(wikitext) || /féminin/.test(wikitext)) return 'la';
+    if (/pluriel/.test(wikitext) || /\|mf\|/.test(wikitext)) return 'les';
+
+    // Fallback: check if the word starts with a vowel → use l'
+    if (/^[aeiouàâéèêëïîôùûü]/i.test(word)) {
+      // Still try to detect gender for tooltip
+      if (/masculin/.test(wikitext)) return 'le';
+      if (/féminin/.test(wikitext)) return 'la';
+    }
+
+    return null; // No article found, show raw translation
+  } catch {
+    return null;
+  }
+}
+
+function speakTranslation() {
+  if (currentTranslation) speak(currentTranslation, currentTranslationLang);
+}
+
 let quiz = { cards:[], idx:0, correct:0, wrong:0, missed:[], dir:'de2fr', revealed:false };
 
 function setDir(btn) {
